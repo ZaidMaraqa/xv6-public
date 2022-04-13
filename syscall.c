@@ -61,7 +61,7 @@ argptr(int n, char **pp, int size)
 {
   int i;
   struct proc *curproc = myproc();
- 
+
   if(argint(n, &i) < 0)
     return -1;
   if(size < 0 || (uint)i >= curproc->vlimit || (uint)i+size > curproc->vlimit
@@ -84,6 +84,8 @@ argstr(int n, char **pp)
   return fetchstr(addr, pp);
 }
 
+extern int sys_mprotect(void);
+extern int sys_munprotect(void);
 extern int sys_chdir(void);
 extern int sys_close(void);
 extern int sys_dup(void);
@@ -107,6 +109,8 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 
 static int (*syscalls[])(void) = {
+[SYS_mprotect]  sys_mprotect,
+[SYS_munprotect]  sys_munprotect,
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
 [SYS_wait]    sys_wait,

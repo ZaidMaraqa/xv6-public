@@ -8,6 +8,8 @@
     int $T_SYSCALL; \
     ret
 
+SYSCALL(mprotect)
+SYSCALL(munprotect)
 SYSCALL(fork)
 SYSCALL(exit)
 SYSCALL(wait)

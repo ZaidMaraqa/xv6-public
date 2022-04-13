@@ -392,10 +392,57 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
   return 0;
 }
 
-//PAGEBREAK!
-// Blank page.
-//PAGEBREAK!
-// Blank page.
-//PAGEBREAK!
-// Blank page.
+int mprotect(void *addr, int len){
+  uint virtualAddress = (uint)addr;
+  uint vlimit = len+virtualAddress;
+  pde_t *pgdir = myproc()->pgdir;
+  pte_t *pte;
+  uint x;
+  uint flags;
 
+  for(x=virtualAddress; x<vlimit; x+=PGSIZE){
+    pte = walkpgdir(pgdir, (char*)x, 0);
+    if(pte==0){
+      cprintf("ERROR\n");
+      return -1;
+    }
+    flags = *pte & PTE_FLAGS(*pte);
+    if(flags & PTE_U){
+      flags &= ~PTE_U;
+      flags |= PTE_W;
+      *pte = PTE_ADDR(*pte) | flags;
+    }
+  }
+  return 0;
+}
+
+int munprotect(void *addr, int len){
+  pte_t *pte;
+  uint x;
+  uint flags;
+  uint virtualAddress = (uint)addr;
+  uint vlimit = len+virtualAddress;
+  pde_t *pgdir = myproc()->pgdir;
+
+  for(x=virtualAddress; x<vlimit; x+=PGSIZE){
+    pte = walkpgdir(pgdir, (char*)x, 0);
+    if(pte==0){
+      cprintf("ERROR\n");
+      return -1;
+    }
+    flags = *pte & PTE_FLAGS(*pte);
+    if(flags & PTE_U){
+      flags &= ~PTE_U;
+      *pte = PTE_ADDR(*pte) | flags;
+    }
+  }
+  return 0;
+
+}
+
+//PAGEBREAK!
+// Blank page.
+//PAGEBREAK!
+// Blank page.
+//PAGEBREAK!
+// Blank page.

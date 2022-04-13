@@ -171,6 +171,8 @@ void            uartintr(void);
 void            uartputc(int);
 
 // vm.c
+int             mprotect(void*, int);
+int             munprotect(void*, int);
 void            seginit(void);
 void            kvmalloc(void);
 pde_t*          setupkvm(void);

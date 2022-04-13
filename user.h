@@ -2,6 +2,8 @@ struct stat;
 struct rtcdate;
 
 // system calls
+int mprotect(void*, int);
+int munprotect(void*, int);
 int fork(void);
 int exit(void) __attribute__((noreturn));
 int wait(void);
